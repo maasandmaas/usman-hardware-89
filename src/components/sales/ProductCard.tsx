@@ -226,6 +226,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               placeholder={`Qty`}
               value={quantityInput}
               onChange={(e) => handleQuantityInputChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleQuickAdd();
+                }
+              }}
               className="h-8 text-xs"
               disabled={isOutOfStock && !hasIncompleteQuantity}
             />
@@ -383,6 +389,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 placeholder={`Qty (${product.unit})`}
                 value={quantityInput}
                 onChange={(e) => handleQuantityInputChange(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleQuickAdd();
+                  }
+                }}
                 className="h-6 text-[10px] flex-1 bg-background border-input px-1"
                 disabled={isOutOfStock && !hasIncompleteQuantity}
               />
