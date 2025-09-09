@@ -18,6 +18,18 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				inter: ['Inter', 'sans-serif'],
+				roboto: ['Roboto', 'sans-serif'],
+				poppins: ['Poppins', 'sans-serif'],
+				montserrat: ['Montserrat', 'sans-serif'],
+				lato: ['Lato', 'sans-serif'],
+				opensans: ['Open Sans', 'sans-serif'],
+				nunito: ['Nunito', 'sans-serif'],
+				raleway: ['Raleway', 'sans-serif'],
+				sourcesans: ['Source Sans Pro', 'sans-serif'],
+				playfair: ['Playfair Display', 'serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
