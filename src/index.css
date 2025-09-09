@@ -42,6 +42,18 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 221.2 83.2% 53.3%;
+
+    /* Font family CSS variables */
+    --font-inter: 'Inter', sans-serif;
+    --font-roboto: 'Roboto', sans-serif;
+    --font-poppins: 'Poppins', sans-serif;
+    --font-montserrat: 'Montserrat', sans-serif;
+    --font-lato: 'Lato', sans-serif;
+    --font-opensans: 'Open Sans', sans-serif;
+    --font-nunito: 'Nunito', sans-serif;
+    --font-raleway: 'Raleway', sans-serif;
+    --font-sourcesans: 'Source Sans Pro', sans-serif;
+    --font-playfair: 'Playfair Display', serif;
   }
 
   .dark {
@@ -90,7 +102,13 @@
   }
 
   body {
-    @apply bg-background text-foreground font-inter;
+    @apply bg-background text-foreground;
+    font-family: var(--font-family, 'Inter', sans-serif) !important;
+  }
+
+  /* Ensure all text elements inherit the font family */
+  h1, h2, h3, h4, h5, h6, p, span, div, button, input, textarea, label, a, li, td, th {
+    font-family: inherit !important;
   }
 
   /* Custom Scrollbar Styles */

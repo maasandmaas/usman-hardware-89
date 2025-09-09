@@ -32,12 +32,19 @@ export function FontProvider({
 
   useEffect(() => {
     const root = window.document.documentElement
+    const body = window.document.body
 
-    // Remove all font classes
-    root.classList.remove("font-inter", "font-roboto", "font-poppins", "font-montserrat", "font-lato", "font-opensans", "font-nunito", "font-raleway", "font-sourcesans", "font-playfair")
+    // Remove all font classes from both root and body
+    const fontClasses = ["font-inter", "font-roboto", "font-poppins", "font-montserrat", "font-lato", "font-opensans", "font-nunito", "font-raleway", "font-sourcesans", "font-playfair"]
+    
+    root.classList.remove(...fontClasses)
+    body.classList.remove(...fontClasses)
 
-    // Add the selected font class
-    root.classList.add(`font-${font}`)
+    // Add the selected font class to body for global application
+    body.classList.add(`font-${font}`)
+    
+    // Also update CSS custom property for font family
+    root.style.setProperty('--font-family', `var(--font-${font})`)
   }, [font])
 
   const value = {
