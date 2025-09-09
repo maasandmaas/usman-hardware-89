@@ -1,0 +1,1391 @@
+
+Complete API Endpoints Documentation
+Base URL: https://api.usmanhardware.com/v1
+1. AUTHENTICATION ENDPOINTS
+POST /auth/login
+Description: User login Request Body:
+
+
+{
+  "email": "string",
+  "password": "string"
+}
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "user": {
+      "id": 1,
+      "name": "Usman Hardware",
+      "email": "admin@usmanhardware.pk",
+      "role": "admin"
+    },
+    "token": "jwt_token_here",
+    "expiresIn": "24h"
+  }
+}
+Error Responses: 401, 422
+
+POST /auth/logout
+Headers: Authorization: Bearer {token} Response (200):
+
+
+{
+  "success": true,
+  "message": "Logged out successfully"
+}
+POST /auth/refresh
+Headers: Authorization: Bearer {token} Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "token": "new_jwt_token_here",
+    "expiresIn": "24h"
+  }
+}
+2. DASHBOARD ENDPOINTS
+GET /dashboard/stats
+Headers: Authorization: Bearer {token} Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "totalRevenue": 1450000,
+    "totalOrders": 342,
+    "totalCustomers": 156,
+    "lowStockItems": 12,
+    "recentSales": [
+      {
+        "id": 1,
+        "customerName": "Ahmad Furniture",
+        "amount": 15000,
+        "date": "2024-11-28",
+        "items": 3
+      }
+    ],
+    "monthlyRevenue": [
+      {"month": "Jan", "revenue": 145000},
+      {"month": "Feb", "revenue": 165000}
+    ],
+    "topProducts": [
+      {
+        "id": 1,
+        "name": "Heavy Duty Hinges",
+        "sales": 45000,
+        "quantity": 120
+      }
+    ]
+  }
+}
+3. PRODUCTS ENDPOINTS
+GET /products
+Headers: Authorization: Bearer {token} Query Parameters:
+
+page: number (default: 1)
+limit: number (default: 20)
+search: string
+category: string
+status: "active" | "inactive"
+sortBy: "name" | "price" | "stock" | "createdAt"
+sortOrder: "asc" | "desc"
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "products": [
+      {
+        "id": 1,
+        "name": "Heavy Duty Hinges",
+        "description": "High-quality steel hinges for heavy doors",
+        "sku": "HDH-001",
+        "category": "Hinges",
+        "price": 125.00,
+        "costPrice": 80.00,
+        "stock": 45,
+        "minStock": 10,
+        "maxStock": 100,
+        "unit": "pieces",
+        "status": "active",
+        "supplier": {
+          "id": 1,
+          "name": "Steel Works Ltd"
+        },
+        "images": ["url1", "url2"],
+        "createdAt": "2024-01-15T10:30:00Z",
+        "updatedAt": "2024-11-28T14:20:00Z"
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 5,
+      "totalItems": 98,
+      "itemsPerPage": 20
+    }
+  }
+}
+GET /products/:id
+Headers: Authorization: Bearer {token} Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "Heavy Duty Hinges",
+    "description": "High-quality steel hinges for heavy doors",
+    "sku": "HDH-001",
+    "category": "Hinges",
+    "price": 125.00,
+    "costPrice": 80.00,
+    "stock": 45,
+    "minStock": 10,
+    "maxStock": 100,
+    "unit": "pieces",
+    "status": "active",
+    "supplierId": 1,
+    "images": ["url1", "url2"],
+    "stockHistory": [
+      {
+        "date": "2024-11-28",
+        "type": "sale",
+        "quantity": -5,
+        "balance": 45,
+        "reference": "INV-001"
+      }
+    ],
+    "createdAt": "2024-01-15T10:30:00Z",
+    "updatedAt": "2024-11-28T14:20:00Z"
+  }
+}
+POST /products
+Headers: Authorization: Bearer {token} Request Body:
+
+
+{
+  "name": "Heavy Duty Hinges",
+  "description": "High-quality steel hinges for heavy doors",
+  "sku": "HDH-001",
+  "category": "Hinges",
+  "price": 125.00,
+  "costPrice": 80.00,
+  "stock": 50,
+  "minStock": 10,
+  "maxStock": 100,
+  "unit": "pieces",
+  "supplierId": 1,
+  "images": ["url1", "url2"]
+}
+Response (201):
+
+
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "Heavy Duty Hinges",
+    // ... all product fields
+  },
+  "message": "Product created successfully"
+}
+PUT /products/:id
+Headers: Authorization: Bearer {token} Request Body: Same as POST Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    // updated product object
+  },
+  "message": "Product updated successfully"
+}
+DELETE /products/:id
+Headers: Authorization: Bearer {token} Response (200):
+
+
+{
+  "success": true,
+  "message": "Product deleted successfully"
+}
+POST /products/:id/stock-adjustment
+Headers: Authorization: Bearer {token} Request Body:
+
+
+{
+  "type": "adjustment" | "restock" | "damage" | "return",
+  "quantity": 10,
+  "reason": "Stock count correction",
+  "reference": "ADJ-001"
+}
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "newStock": 55,
+    "adjustment": {
+      "id": 1,
+      "type": "adjustment",
+      "quantity": 10,
+      "reason": "Stock count correction",
+      "createdAt": "2024-11-28T15:30:00Z"
+    }
+  }
+}
+4. CUSTOMERS ENDPOINTS
+GET /customers
+Headers: Authorization: Bearer {token} Query Parameters:
+
+page: number
+limit: number
+search: string
+type: "individual" | "business"
+status: "active" | "inactive"
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "customers": [
+      {
+        "id": 1,
+        "name": "Ahmad Furniture",
+        "email": "ahmad@furniture.pk",
+        "phone": "+92-300-1234567",
+        "type": "business",
+        "address": "Main Bazaar, Hafizabad",
+        "city": "Hafizabad",
+        "status": "active",
+        "creditLimit": 50000,
+        "currentBalance": 15000,
+        "totalPurchases": 125000,
+        "lastPurchase": "2024-11-28",
+        "createdAt": "2024-01-10T08:00:00Z"
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 8,
+      "totalItems": 156,
+      "itemsPerPage": 20
+    }
+  }
+}
+GET /customers/:id
+Headers: Authorization: Bearer {token} Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "Ahmad Furniture",
+    "email": "ahmad@furniture.pk",
+    "phone": "+92-300-1234567",
+    "type": "business",
+    "address": "Main Bazaar, Hafizabad",
+    "city": "Hafizabad",
+    "status": "active",
+    "creditLimit": 50000,
+    "currentBalance": 15000,
+    "totalPurchases": 125000,
+    "lastPurchase": "2024-11-28",
+    "recentOrders": [
+      {
+        "id": 1,
+        "orderNumber": "ORD-001",
+        "date": "2024-11-28",
+        "amount": 15000,
+        "status": "completed"
+      }
+    ],
+    "paymentHistory": [
+      {
+        "id": 1,
+        "amount": 10000,
+        "date": "2024-11-25",
+        "type": "payment",
+        "reference": "PAY-001"
+      }
+    ],
+    "createdAt": "2024-01-10T08:00:00Z"
+  }
+}
+POST /customers
+Headers: Authorization: Bearer {token} Request Body:
+
+
+{
+  "name": "Ahmad Furniture",
+  "email": "ahmad@furniture.pk",
+  "phone": "+92-300-1234567",
+  "type": "business",
+  "address": "Main Bazaar, Hafizabad",
+  "city": "Hafizabad",
+  "creditLimit": 50000
+}
+Response (201):
+
+
+{
+  "success": true,
+  "data": {
+    // customer object with generated id
+  },
+  "message": "Customer created successfully"
+}
+PUT /customers/:id
+Headers: Authorization: Bearer {token} Request Body: Same as POST Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    // updated customer object
+  },
+  "message": "Customer updated successfully"
+}
+5. SALES ENDPOINTS
+GET /sales
+Headers: Authorization: Bearer {token} Query Parameters:
+
+page: number
+limit: number
+dateFrom: string (YYYY-MM-DD)
+dateTo: string (YYYY-MM-DD)
+customerId: number
+status: "pending" | "completed" | "cancelled"
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "sales": [
+      {
+        "id": 1,
+        "orderNumber": "ORD-001",
+        "customerId": 1,
+        "customerName": "Ahmad Furniture",
+        "date": "2024-11-28",
+        "time": "14:30:00",
+        "items": [
+          {
+            "productId": 1,
+            "productName": "Heavy Duty Hinges",
+            "quantity": 10,
+            "unitPrice": 125.00,
+            "total": 1250.00
+          }
+        ],
+        "subtotal": 1250.00,
+        "discount": 50.00,
+        "tax": 120.00,
+        "total": 1320.00,
+        "paymentMethod": "credit",
+        "status": "completed",
+        "createdBy": "Usman",
+        "createdAt": "2024-11-28T14:30:00Z"
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 18,
+      "totalItems": 342,
+      "itemsPerPage": 20
+    },
+    "summary": {
+      "totalSales": 1450000,
+      "totalOrders": 342,
+      "avgOrderValue": 4240
+    }
+  }
+}
+GET /sales/:id
+Headers: Authorization: Bearer {token} Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "orderNumber": "ORD-001",
+    "customerId": 1,
+    "customerName": "Ahmad Furniture",
+    "customerDetails": {
+      "email": "ahmad@furniture.pk",
+      "phone": "+92-300-1234567",
+      "address": "Main Bazaar, Hafizabad"
+    },
+    "date": "2024-11-28",
+    "time": "14:30:00",
+    "items": [
+      {
+        "productId": 1,
+        "productName": "Heavy Duty Hinges",
+        "sku": "HDH-001",
+        "quantity": 10,
+        "unitPrice": 125.00,
+        "total": 1250.00
+      }
+    ],
+    "subtotal": 1250.00,
+    "discount": 50.00,
+    "tax": 120.00,
+    "total": 1320.00,
+    "paymentMethod": "credit",
+    "status": "completed",
+    "notes": "Urgent delivery required",
+    "createdBy": "Usman",
+    "createdAt": "2024-11-28T14:30:00Z"
+  }
+}
+POST /sales
+Headers: Authorization: Bearer {token} Request Body:
+
+
+{
+  "customerId": 1,
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 10,
+      "unitPrice": 125.00
+    }
+  ],
+  "discount": 50.00,
+  "paymentMethod": "credit",
+  "notes": "Urgent delivery required"
+}
+Response (201):
+
+
+{
+  "success": true,
+  "data": {
+    // complete sale object with generated id and order number
+  },
+  "message": "Sale created successfully"
+}
+PUT /sales/:id/status
+Headers: Authorization: Bearer {token} Request Body:
+
+
+{
+  "status": "completed" | "cancelled",
+  "reason": "Customer request" // if cancelled
+}
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    // updated sale object
+  },
+  "message": "Sale status updated successfully"
+}
+6. INVENTORY ENDPOINTS
+GET /inventory
+Headers: Authorization: Bearer {token} Query Parameters:
+
+page: number
+limit: number
+category: string
+lowStock: boolean
+outOfStock: boolean
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "inventory": [
+      {
+        "productId": 1,
+        "productName": "Heavy Duty Hinges",
+        "sku": "HDH-001",
+        "category": "Hinges",
+        "currentStock": 45,
+        "minStock": 10,
+        "maxStock": 100,
+        "unit": "pieces",
+        "value": 5625.00, // current stock * cost price
+        "lastRestocked": "2024-11-20",
+        "stockStatus": "adequate" | "low" | "out"
+      }
+    ],
+    "summary": {
+      "totalProducts": 98,
+      "totalValue": 456000,
+      "lowStockItems": 12,
+      "outOfStockItems": 3
+    }
+  }
+}
+GET /inventory/movements
+Headers: Authorization: Bearer {token} Query Parameters:
+
+page: number
+limit: number
+productId: number
+type: "sale" | "purchase" | "adjustment" | "return"
+dateFrom: string
+dateTo: string
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "movements": [
+      {
+        "id": 1,
+        "productId": 1,
+        "productName": "Heavy Duty Hinges",
+        "type": "sale",
+        "quantity": -10,
+        "balanceBefore": 55,
+        "balanceAfter": 45,
+        "reference": "ORD-001",
+        "reason": "Customer sale",
+        "createdAt": "2024-11-28T14:30:00Z"
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 25,
+      "totalItems": 500,
+      "itemsPerPage": 20
+    }
+  }
+}
+POST /inventory/restock
+Headers: Authorization: Bearer {token} Request Body:
+
+
+{
+  "productId": 1,
+  "quantity": 50,
+  "costPrice": 80.00,
+  "supplierId": 1,
+  "purchaseOrderId": 1,
+  "notes": "Monthly restock"
+}
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "newStock": 95,
+    "movement": {
+      "id": 1,
+      "type": "restock",
+      "quantity": 50,
+      "balanceAfter": 95
+    }
+  },
+  "message": "Stock updated successfully"
+}
+7. SUPPLIERS ENDPOINTS
+GET /suppliers
+Headers: Authorization: Bearer {token} Query Parameters:
+
+page: number
+limit: number
+search: string
+status: "active" | "inactive"
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "suppliers": [
+      {
+        "id": 1,
+        "name": "Steel Works Ltd",
+        "contactPerson": "Muhammad Ali",
+        "phone": "+92-42-1234567",
+        "email": "info@steelworks.pk",
+        "address": "Industrial Area, Lahore",
+        "city": "Lahore",
+        "status": "active",
+        "totalPurchases": 250000,
+        "pendingPayments": 25000,
+        "lastOrderDate": "2024-11-25",
+        "productsCount": 15,
+        "createdAt": "2024-01-05T10:00:00Z"
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 3,
+      "totalItems": 8,
+      "itemsPerPage": 20
+    }
+  }
+}
+GET /suppliers/:id
+Headers: Authorization: Bearer {token} Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "Steel Works Ltd",
+    "contactPerson": "Muhammad Ali",
+    "phone": "+92-42-1234567",
+    "email": "info@steelworks.pk",
+    "address": "Industrial Area, Lahore",
+    "city": "Lahore",
+    "status": "active",
+    "totalPurchases": 250000,
+    "pendingPayments": 25000,
+    "lastOrderDate": "2024-11-25",
+    "products": [
+      {
+        "id": 1,
+        "name": "Heavy Duty Hinges",
+        "sku": "HDH-001",
+        "costPrice": 80.00
+      }
+    ],
+    "recentOrders": [
+      {
+        "id": 1,
+        "orderNumber": "PO-001",
+        "date": "2024-11-25",
+        "amount": 15000,
+        "status": "completed"
+      }
+    ],
+    "createdAt": "2024-01-05T10:00:00Z"
+  }
+}
+POST /suppliers
+Headers: Authorization: Bearer {token} Request Body:
+
+
+{
+  "name": "Steel Works Ltd",
+  "contactPerson": "Muhammad Ali",
+  "phone": "+92-42-1234567",
+  "email": "info@steelworks.pk",
+  "address": "Industrial Area, Lahore",
+  "city": "Lahore"
+}
+Response (201):
+
+
+{
+  "success": true,
+  "data": {
+    // supplier object with generated id
+  },
+  "message": "Supplier created successfully"
+}
+8. PURCHASE ORDERS ENDPOINTS
+GET /purchase-orders
+Headers: Authorization: Bearer {token} Query Parameters:
+
+page: number
+limit: number
+supplierId: number
+status: "draft" | "sent" | "confirmed" | "received" | "cancelled"
+dateFrom: string
+dateTo: string
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "purchaseOrders": [
+      {
+        "id": 1,
+        "orderNumber": "PO-001",
+        "supplierId": 1,
+        "supplierName": "Steel Works Ltd",
+        "date": "2024-11-25",
+        "expectedDelivery": "2024-12-05",
+        "items": [
+          {
+            "productId": 1,
+            "productName": "Heavy Duty Hinges",
+            "quantity": 100,
+            "unitPrice": 80.00,
+            "total": 8000.00
+          }
+        ],
+        "subtotal": 8000.00,
+        "tax": 800.00,
+        "total": 8800.00,
+        "status": "confirmed",
+        "notes": "Urgent order for restock",
+        "createdBy": "Usman",
+        "createdAt": "2024-11-25T10:00:00Z"
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 5,
+      "totalItems": 45,
+      "itemsPerPage": 20
+    }
+  }
+}
+POST /purchase-orders
+Headers: Authorization: Bearer {token} Request Body:
+
+
+{
+  "supplierId": 1,
+  "expectedDelivery": "2024-12-05",
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 100,
+      "unitPrice": 80.00
+    }
+  ],
+  "notes": "Urgent order for restock"
+}
+Response (201):
+
+
+{
+  "success": true,
+  "data": {
+    // complete purchase order object
+  },
+  "message": "Purchase order created successfully"
+}
+PUT /purchase-orders/:id/receive
+Headers: Authorization: Bearer {token} Request Body:
+
+
+{
+  "items": [
+    {
+      "productId": 1,
+      "quantityReceived": 95, // if partial delivery
+      "condition": "good" | "damaged"
+    }
+  ],
+  "notes": "5 pieces were damaged"
+}
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    // updated purchase order with received status
+  },
+  "message": "Purchase order marked as received"
+}
+9. QUOTATIONS ENDPOINTS
+GET /quotations
+Headers: Authorization: Bearer {token} Query Parameters:
+
+page: number
+limit: number
+customerId: number
+status: "draft" | "sent" | "accepted" | "rejected" | "expired"
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "quotations": [
+      {
+        "id": 1,
+        "quoteNumber": "QUO-001",
+        "customerId": 1,
+        "customerName": "Ahmad Furniture",
+        "date": "2024-11-28",
+        "validUntil": "2024-12-28",
+        "items": [
+          {
+            "productId": 1,
+            "productName": "Heavy Duty Hinges",
+            "quantity": 50,
+            "unitPrice": 125.00,
+            "total": 6250.00
+          }
+        ],
+        "subtotal": 6250.00,
+        "discount": 250.00,
+        "tax": 600.00,
+        "total": 6600.00,
+        "status": "sent",
+        "notes": "Bulk order discount applied",
+        "createdBy": "Usman",
+        "createdAt": "2024-11-28T09:00:00Z"
+      }
+    ]
+  }
+}
+POST /quotations
+Headers: Authorization: Bearer {token} Request Body:
+
+
+{
+  "customerId": 1,
+  "validUntil": "2024-12-28",
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 50,
+      "unitPrice": 125.00
+    }
+  ],
+  "discount": 250.00,
+  "notes": "Bulk order discount applied"
+}
+PUT /quotations/:id/convert-to-sale
+Headers: Authorization: Bearer {token} Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "sale": {
+      // newly created sale object
+    },
+    "quotation": {
+      // updated quotation with accepted status
+    }
+  },
+  "message": "Quotation converted to sale successfully"
+}
+10. FINANCE ENDPOINTS
+GET /finance/overview
+Headers: Authorization: Bearer {token} Query Parameters:
+
+period: "today" | "week" | "month" | "year"
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "revenue": {
+      "total": 1450000,
+      "cash": 850000,
+      "credit": 600000,
+      "growth": 12.5
+    },
+    "expenses": {
+      "total": 450000,
+      "purchases": 300000,
+      "operational": 150000,
+      "growth": 8.2
+    },
+    "profit": {
+      "gross": 1000000,
+      "net": 850000,
+      "margin": 58.6
+    },
+    "accountsReceivable": 125000,
+    "accountsPayable": 75000,
+    "cashFlow": {
+      "inflow": 950000,
+      "outflow": 525000,
+      "net": 425000
+    }
+  }
+}
+GET /finance/accounts-receivable
+Headers: Authorization: Bearer {token} Query Parameters:
+
+page: number
+limit: number
+overdue: boolean
+customerId: number
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "receivables": [
+      {
+        "id": 1,
+        "customerId": 1,
+        "customerName": "Ahmad Furniture",
+        "invoiceNumber": "INV-001",
+        "date": "2024-11-15",
+        "dueDate": "2024-12-15",
+        "amount": 15000,
+        "paidAmount": 5000,
+        "balance": 10000,
+        "daysOverdue": 0,
+        "status": "pending"
+      }
+    ],
+    "summary": {
+      "totalReceivables": 125000,
+      "overdueAmount": 35000,
+      "overdueCount": 8
+    }
+  }
+}
+GET /finance/expenses
+Headers: Authorization: Bearer {token} Query Parameters:
+
+page: number
+limit: number
+category: string
+dateFrom: string
+dateTo: string
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "expenses": [
+      {
+        "id": 1,
+        "category": "Purchase",
+        "description": "Hinges purchase from Steel Works",
+        "amount": 25000,
+        "date": "2024-11-25",
+        "reference": "PO-001",
+        "paymentMethod": "bank_transfer",
+        "receipt": "receipt_url",
+        "createdBy": "Usman"
+      }
+    ],
+    "summary": {
+      "totalExpenses": 450000,
+      "categories": [
+        {"category": "Purchases", "amount": 300000},
+        {"category": "Rent", "amount": 50000},
+        {"category": "Utilities", "amount": 25000}
+      ]
+    }
+  }
+}
+POST /finance/payments
+Headers: Authorization: Bearer {token} Request Body:
+
+
+{
+  "customerId": 1,
+  "amount": 10000,
+  "paymentMethod": "cash" | "bank_transfer" | "cheque",
+  "reference": "Payment reference",
+  "notes": "Partial payment for invoice INV-001"
+}
+Response (201):
+
+
+{
+  "success": true,
+  "data": {
+    "payment": {
+      "id": 1,
+      "customerId": 1,
+      "amount": 10000,
+      "paymentMethod": "cash",
+      "reference": "PAY-001",
+      "date": "2024-11-28",
+      "notes": "Partial payment for invoice INV-001"
+    },
+    "updatedBalance": 5000
+  },
+  "message": "Payment recorded successfully"
+}
+11. REPORTS ENDPOINTS
+GET /reports/sales
+Headers: Authorization: Bearer {token} Query Parameters:
+
+period: "daily" | "weekly" | "monthly" | "yearly"
+dateFrom: string
+dateTo: string
+groupBy: "date" | "product" | "customer" | "category"
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "salesReport": [
+      {
+        "period": "2024-11-28",
+        "totalSales": 45000,
+        "totalOrders": 8,
+        "avgOrderValue": 5625,
+        "topProduct": "Heavy Duty Hinges"
+      }
+    ],
+    "summary": {
+      "totalRevenue": 1450000,
+      "totalOrders": 342,
+      "avgOrderValue": 4240,
+      "growth": 12.5
+    }
+  }
+}
+GET /reports/inventory
+Headers: Authorization: Bearer {token} Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "inventoryReport": {
+      "totalProducts": 98,
+      "totalValue": 456000,
+      "lowStockItems": [
+        {
+          "productId": 1,
+          "productName": "Heavy Duty Hinges",
+          "currentStock": 5,
+          "minStock": 10,
+          "reorderQuantity": 50
+        }
+      ],
+      "fastMovingItems": [
+        {
+          "productId": 1,
+          "productName": "Heavy Duty Hinges",
+          "soldQuantity": 150,
+          "revenue": 18750
+        }
+      ],
+      "slowMovingItems": [],
+      "deadStock": []
+    }
+  }
+}
+GET /reports/financial
+Headers: Authorization: Bearer {token} Query Parameters:
+
+period: "monthly" | "quarterly" | "yearly"
+year: number
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "financialReport": {
+      "revenue": {
+        "total": 1450000,
+        "breakdown": [
+          {"month": "January", "amount": 145000},
+          {"month": "February", "amount": 165000}
+        ]
+      },
+      "expenses": {
+        "total": 450000,
+        "breakdown": [
+          {"category": "Purchases", "amount": 300000},
+          {"category": "Rent", "amount": 50000}
+        ]
+      },
+      "profit": {
+        "gross": 1000000,
+        "net": 850000,
+        "margin": 58.6
+      },
+      "cashFlow": {
+        "opening": 100000,
+        "inflow": 950000,
+        "outflow": 525000,
+        "closing": 525000
+      }
+    }
+  }
+}
+12. NOTIFICATIONS ENDPOINTS
+GET /notifications
+Headers: Authorization: Bearer {token} Query Parameters:
+
+page: number
+limit: number
+type: "low_stock" | "overdue_payment" | "new_order" | "system"
+read: boolean
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "notifications": [
+      {
+        "id": 1,
+        "type": "low_stock",
+        "title": "Low Stock Alert",
+        "message": "Heavy Duty Hinges stock is running low (5 remaining)",
+        "data": {
+          "productId": 1,
+          "currentStock": 5,
+          "minStock": 10
+        },
+        "read": false,
+        "createdAt": "2024-11-28T10:00:00Z"
+      }
+    ],
+    "unreadCount": 8
+  }
+}
+PUT /notifications/:id/read
+Headers: Authorization: Bearer {token} Response (200):
+
+
+{
+  "success": true,
+  "message": "Notification marked as read"
+}
+PUT /notifications/mark-all-read
+Headers: Authorization: Bearer {token} Response (200):
+
+
+{
+  "success": true,
+  "message": "All notifications marked as read"
+}
+13. CALENDAR/EVENTS ENDPOINTS
+GET /calendar/events
+Headers: Authorization: Bearer {token} Query Parameters:
+
+date: string (YYYY-MM-DD)
+month: string (YYYY-MM)
+type: "call" | "delivery" | "payment" | "meeting"
+Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "events": [
+      {
+        "id": 1,
+        "title": "Follow-up with Ahmad Furniture",
+        "description": "Discuss new order requirements",
+        "type": "call",
+        "date": "2024-11-28",
+        "time": "10:00",
+        "customerId": 1,
+        "customerName": "Ahmad Furniture",
+        "priority": "high",
+        "status": "scheduled",
+        "reminder": 30 // minutes before
+      }
+    ]
+  }
+}
+POST /calendar/events
+Headers: Authorization: Bearer {token} Request Body:
+
+
+{
+  "title": "Follow-up with Ahmad Furniture",
+  "description": "Discuss new order requirements",
+  "type": "call",
+  "date": "2024-11-28",
+  "time": "10:00",
+  "customerId": 1,
+  "priority": "high",
+  "reminder": 30
+}
+14. BACKUP & SYNC ENDPOINTS
+GET /backup/status
+Headers: Authorization: Bearer {token} Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "lastBackup": "2024-11-28T02:30:00Z",
+    "backupSize": "2.4 GB",
+    "storageUsed": "15.6 GB",
+    "storageLimit": "50 GB",
+    "autoBackupEnabled": true,
+    "syncStatus": "up_to_date",
+    "lastSync": "2024-11-28T15:25:00Z"
+  }
+}
+POST /backup/create
+Headers: Authorization: Bearer {token} Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "backupId": "backup_123456",
+    "status": "initiated",
+    "estimatedTime": "5 minutes"
+  },
+  "message": "Backup initiated successfully"
+}
+GET /backup/history
+Headers: Authorization: Bearer {token} Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "backups": [
+      {
+        "id": "backup_123456",
+        "date": "2024-11-28T02:30:00Z",
+        "size": "2.4 GB",
+        "status": "completed",
+        "type": "automatic"
+      }
+    ]
+  }
+}
+15. SETTINGS ENDPOINTS
+GET /settings
+Headers: Authorization: Bearer {token} Response (200):
+
+
+{
+  "success": true,
+  "data": {
+    "profile": {
+      "name": "Usman Hardware",
+      "email": "admin@usmanhardware.pk",
+      "phone": "+92-300-1234567",
+      "role": "admin"
+    },
+    "store": {
+      "name": "Usman Hardware",
+      "address": "Main Bazaar, Hafizabad, Punjab",
+      "currency": "PKR",
+      "taxRate": 10,
+      "lowStockThreshold": 5,
+      "openTime": "08:00",
+      "closeTime": "20:00"
+    },
+    "notifications": {
+      "newOrder": true,
+      "lowStock": true,
+      "paymentDue": true,
+      "dailyTarget": true
+    },
+    "system": {
+      "autoBackup": true,
+      "dataRetention": 30,
+      "cacheEnabled": true,
+      "darkMode": false
+    }
+  }
+}
+PUT /settings
+Headers: Authorization: Bearer {token} Request Body:
+
+
+{
+  "profile": {
+    "name": "Usman Hardware",
+    "email": "admin@usmanhardware.pk",
+    "phone": "+92-300-1234567"
+  },
+  "store": {
+    "name": "Usman Hardware",
+    "currency": "PKR",
+    "taxRate": 10,
+    "lowStockThreshold": 5
+  },
+  "notifications": {
+    "newOrder": true,
+    "lowStock": true
+  },
+  "system": {
+    "autoBackup": true,
+    "darkMode": false
+  }
+}
+COMMON ERROR RESPONSES
+400 - Bad Request
+
+{
+  "success": false,
+  "error": "validation_error",
+  "message": "Invalid input data",
+  "details": [
+    {
+      "field": "email",
+      "message": "Invalid email format"
+    }
+  ]
+}
+401 - Unauthorized
+
+{
+  "success": false,
+  "error": "unauthorized",
+  "message": "Invalid or expired token"
+}
+403 - Forbidden
+
+{
+  "success": false,
+  "error": "forbidden",
+  "message": "Insufficient permissions"
+}
+404 - Not Found
+
+{
+  "success": false,
+  "error": "not_found",
+  "message": "Resource not found"
+}
+422 - Unprocessable Entity
+
+{
+  "success": false,
+  "error": "validation_error",
+  "message": "The given data was invalid",
+  "details": {
+    "field_name": ["error message"]
+  }
+}
+500 - Internal Server Error
+
+{
+  "success": false,
+  "error": "internal_error",
+  "message": "Something went wrong on our end"
+}
+PAGINATION STRUCTURE
+All paginated endpoints return this structure:
+
+
+{
+  "pagination": {
+    "currentPage": 1,
+    "totalPages": 10,
+    "totalItems": 200,
+    "itemsPerPage": 20,
+    "hasNextPage": true,
+    "hasPreviousPage": false
+  }
+}
+AUTHENTICATION
+All protected endpoints require:
+
+Header: Authorization: Bearer {jwt_token}
+Token Format: JWT with user information
+Expiration: 24 hours
+Refresh: Use /auth/refresh endpoint
+This comprehensive API documentation covers all the endpoints needed to make your hardware store management system fully dynamic and functional. Each endpoint includes proper request/response structures, error handling, and all necessary parameters for complete functionality.
