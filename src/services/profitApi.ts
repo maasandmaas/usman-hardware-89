@@ -147,6 +147,16 @@ export interface DailyTrend {
   profit_margin: string;
 }
 
+export interface MonthlyReport {
+  year: string;
+  month: string;
+  period: string;
+  revenue: string;
+  profit: string;
+  sales_count: string;
+  profit_margin: string;
+}
+
 // Generic API request function
 const apiRequest = async <T>(
   endpoint: string,
@@ -227,4 +237,8 @@ export const profitApi = {
   // Daily data for charts
   getDailyProfitData: () =>
     apiRequest<DailyTrend[]>(`/daily-report`),
+
+  // Monthly report data
+  getMonthlyReport: () =>
+    apiRequest<MonthlyReport[]>(`/monthly-report`),
 };
