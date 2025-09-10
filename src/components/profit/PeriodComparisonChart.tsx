@@ -172,11 +172,21 @@ export function PeriodComparisonChart({ data, isLoading }: PeriodComparisonChart
               />
               
               <YAxis 
+                yAxisId="left"
                 stroke="hsl(var(--muted-foreground))"
                 fontSize={12}
                 fontWeight={500}
                 tickFormatter={(value) => formatNumber(value)}
                 className="text-slate-600 dark:text-slate-400"
+              />
+              <YAxis 
+                yAxisId="right"
+                orientation="right"
+                stroke="#10B981"
+                fontSize={12}
+                fontWeight={500}
+                tickFormatter={(value) => formatNumber(value)}
+                className="text-emerald-600 dark:text-emerald-400"
               />
               
               <Tooltip 
@@ -205,6 +215,7 @@ export function PeriodComparisonChart({ data, isLoading }: PeriodComparisonChart
               <Area
                 type="monotone"
                 dataKey="revenueNum"
+                yAxisId="left"
                 stroke="#3B82F6"
                 strokeWidth={3}
                 fill="url(#revenueGradient)"
@@ -229,6 +240,7 @@ export function PeriodComparisonChart({ data, isLoading }: PeriodComparisonChart
               <Area
                 type="monotone"
                 dataKey="profitNum"
+                yAxisId="right"
                 stroke="#10B981"
                 strokeWidth={3}
                 fill="url(#profitGradient)"

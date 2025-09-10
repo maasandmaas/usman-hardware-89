@@ -253,6 +253,7 @@ export default function ProfitMainChart() {
                 />
                 
                 <YAxis 
+                  yAxisId="left"
                   stroke="hsl(var(--muted-foreground))"
                   fontSize={12}
                   fontWeight={500}
@@ -261,6 +262,18 @@ export default function ProfitMainChart() {
                   tickLine={false}
                   dx={-10}
                   className="text-slate-600 dark:text-slate-400"
+                />
+                <YAxis 
+                  yAxisId="right"
+                  orientation="right"
+                  stroke="#10B981"
+                  fontSize={12}
+                  fontWeight={500}
+                  tickFormatter={(value) => formatNumber(value)}
+                  axisLine={false}
+                  tickLine={false}
+                  dx={10}
+                  className="text-emerald-600 dark:text-emerald-400"
                 />
                 
                 <Tooltip 
@@ -291,6 +304,7 @@ export default function ProfitMainChart() {
                 <Line 
                   type="monotone" 
                   dataKey="revenue" 
+                  yAxisId="left"
                   stroke="#3B82F6" 
                   strokeWidth={4}
                   filter="url(#revenueGlow)"
@@ -314,6 +328,7 @@ export default function ProfitMainChart() {
                 <Line 
                   type="monotone" 
                   dataKey="profit" 
+                  yAxisId="right"
                   stroke="#10B981" 
                   strokeWidth={4}
                   filter="url(#profitGlow)"
@@ -395,8 +410,16 @@ export default function ProfitMainChart() {
                   fontSize={12}
                 />
                 <YAxis 
+                  yAxisId="left"
                   stroke="hsl(var(--muted-foreground))"
                   fontSize={12}
+                />
+                <YAxis 
+                  yAxisId="right"
+                  orientation="right"
+                  stroke="#10B981"
+                  fontSize={12}
+                  tickFormatter={(value) => formatNumber(value)}
                 />
                 <Tooltip 
                   contentStyle={{
@@ -413,6 +436,7 @@ export default function ProfitMainChart() {
                 <Line 
                   type="monotone" 
                   dataKey="profit" 
+                  yAxisId="right"
                   stroke="#10B981" 
                   strokeWidth={3}
                   dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
@@ -421,6 +445,7 @@ export default function ProfitMainChart() {
                 <Line 
                   type="monotone" 
                   dataKey="revenue" 
+                  yAxisId="left"
                   stroke="#3B82F6" 
                   strokeWidth={2}
                   dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
@@ -489,8 +514,16 @@ export default function ProfitMainChart() {
                   fontSize={12}
                 />
                 <YAxis 
+                  yAxisId="left"
                   stroke="hsl(var(--muted-foreground))"
                   fontSize={12}
+                />
+                <YAxis 
+                  yAxisId="right"
+                  orientation="right"
+                  stroke="#10B981"
+                  fontSize={12}
+                  tickFormatter={(value) => formatNumber(value)}
                 />
                 <Tooltip 
                   contentStyle={{
@@ -507,6 +540,7 @@ export default function ProfitMainChart() {
                 <Line 
                   type="monotone" 
                   dataKey="profit" 
+                  yAxisId="right"
                   stroke="#10B981" 
                   strokeWidth={3}
                   dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
@@ -515,6 +549,7 @@ export default function ProfitMainChart() {
                 <Line 
                   type="monotone" 
                   dataKey="margin" 
+                  yAxisId="right"
                   stroke="#F59E0B" 
                   strokeWidth={2}
                   dot={{ fill: '#F59E0B', strokeWidth: 2, r: 4 }}
@@ -582,8 +617,16 @@ export default function ProfitMainChart() {
                   fontSize={12}
                 />
                 <YAxis 
+                  yAxisId="left"
                   stroke="hsl(var(--muted-foreground))"
                   fontSize={12}
+                />
+                <YAxis 
+                  yAxisId="right"
+                  orientation="right"
+                  stroke="#10B981"
+                  fontSize={12}
+                  tickFormatter={(value) => formatNumber(value)}
                 />
                 <Tooltip 
                   contentStyle={{
@@ -600,6 +643,7 @@ export default function ProfitMainChart() {
                 <Line 
                   type="monotone" 
                   dataKey="profit" 
+                  yAxisId="right"
                   stroke="#10B981" 
                   strokeWidth={4}
                   dot={{ fill: '#10B981', strokeWidth: 2, r: 6 }}
@@ -608,6 +652,7 @@ export default function ProfitMainChart() {
                 <Line 
                   type="monotone" 
                   dataKey="revenue" 
+                  yAxisId="left"
                   stroke="#3B82F6" 
                   strokeWidth={3}
                   dot={{ fill: '#3B82F6', strokeWidth: 2, r: 6 }}
